@@ -1,0 +1,12 @@
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="neutral_50">#FFF9F9F9</color>
+    <color name="neutral_100">#FFF0F0F0</color>
+    <color name="neutral_200">#FFE0E0E0</color>
+    <color name="neutral_300">#FFCCCCCC</color>
+    <color name="neutral_400">#FF999999</color>
+    <color name="neutral_500">#FF666666</color>
+    <color name="neutral_800">#FF1F1F1F</color>
+    <color name="neutral_900">#FF121212</color>
+</resources>
