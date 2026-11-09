@@ -61,12 +61,13 @@ The following unit test suites were established in `app/src/test/java/com/canvot
 ## 4. CI/CD Workflow & Build Pipeline
 
 The automated build pipeline [`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml) was executed and verified:
-* **Workflow Run**: [GitHub Actions Run #42552468912](https://github.com/purval26/canvotes/actions/runs/42552468912)
+* **Workflow Run #1**: [GitHub Actions Run #42552468912](https://github.com/purval26/canvotes/actions/runs/42552468912) — Initial Release v1.0.0
+* **Workflow Run #2 (120 FPS & Engine Overhaul)**: [GitHub Actions Run #42556057928](https://github.com/purval26/canvotes/actions/runs/42556057928) — Release v1.0.1 (1m 54s)
 * **Environment**: `ubuntu-latest`, Temurin JDK 17, and runner-native Android SDK
 * **Gradle Wrapper**: Self-contained Gradle 8.9 distribution
 * **Test Verification**: `./gradlew testDebugUnitTest` passed cleanly
-* **Debug APK Compilation**: Assembled `app-debug.apk` (18 MB)
-* **Release APK Compilation**: Assembled `app-release-unsigned.apk` (12 MB)
+* **Debug APK Compilation**: Assembled `app-debug.apk` (19 MB)
+* **Release APK Compilation**: Assembled `app-release-unsigned.apk` (13 MB)
 * **Artifact Delivery**: Uploaded to GitHub Actions artifacts and verified locally via `gh run download` into `./artifacts/`
 
 ---
