@@ -60,13 +60,14 @@ The following unit test suites were established in `app/src/test/java/com/canvot
 
 ## 4. CI/CD Workflow & Build Pipeline
 
-The automated build pipeline [`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml) provides:
-* **Environment**: `ubuntu-latest`, Temurin JDK 17, Android SDK tools via `android-actions/setup-android@v3`.
-* **Gradle Wrapper**: Self-contained Gradle 8.9 distribution.
-* **Test Verification**: Runs `./gradlew testDebugUnitTest --stacktrace`.
-* **Debug APK Compilation**: Runs `./gradlew assembleDebug --stacktrace`.
-* **Release APK Compilation**: Runs `./gradlew assembleRelease --stacktrace`.
-* **Artifact Delivery**: Uploads `canvotes-debug-apk` and `canvotes-release-unsigned-apk` with a 14-day retention policy.
+The automated build pipeline [`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml) was executed and verified:
+* **Workflow Run**: [GitHub Actions Run #42552468912](https://github.com/purval26/canvotes/actions/runs/42552468912)
+* **Environment**: `ubuntu-latest`, Temurin JDK 17, and runner-native Android SDK
+* **Gradle Wrapper**: Self-contained Gradle 8.9 distribution
+* **Test Verification**: `./gradlew testDebugUnitTest` passed cleanly
+* **Debug APK Compilation**: Assembled `app-debug.apk` (18 MB)
+* **Release APK Compilation**: Assembled `app-release-unsigned.apk` (12 MB)
+* **Artifact Delivery**: Uploaded to GitHub Actions artifacts and verified locally via `gh run download` into `./artifacts/`
 
 ---
 
