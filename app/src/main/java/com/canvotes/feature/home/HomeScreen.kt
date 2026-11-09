@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.canvotes.design.components.CanvotesConfirmDialog
 import com.canvotes.design.components.CanvotesInputDialog
 import com.canvotes.domain.model.Notebook
@@ -45,7 +46,7 @@ fun HomeScreen(
                         Text(
                             text = "CANVOTES",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            letterSpacing = androidx.compose.ui.unit.sp(2)
+                            letterSpacing = 2.sp
                         )
                         Text(
                             text = "An infinite space for finite distractions.",
