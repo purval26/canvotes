@@ -51,10 +51,7 @@ class MainActivity : ComponentActivity() {
                 if (highestMode != null && highestMode.refreshRate >= 90f) {
                     val params = window.attributes
                     params.preferredDisplayModeId = highestMode.modeId
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        params.preferredMinDisplayRefreshRate = highestMode.refreshRate
-                        params.preferredMaxDisplayRefreshRate = highestMode.refreshRate
-                    }
+                    params.preferredRefreshRate = highestMode.refreshRate
                     window.attributes = params
                 }
             }
