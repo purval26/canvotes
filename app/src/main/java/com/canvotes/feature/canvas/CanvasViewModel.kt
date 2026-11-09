@@ -228,6 +228,13 @@ class CanvasViewModel(
                     _activeShape.value = null
                 }
             }
+            is CanvasInputEvent.StrokeCancel -> {
+                _activeStroke.value = null
+                _activeShape.value = null
+            }
+            is CanvasInputEvent.PanZoom -> {
+                transformViewport(Offset(event.deltaX, event.deltaY), event.zoomFactor)
+            }
             else -> Unit
         }
     }

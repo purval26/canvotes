@@ -4,6 +4,23 @@ All notable changes to the **Canvotes** project are documented here following [K
 
 ---
 
+## [1.0.1] - 2026-11-09
+
+### Performance & Engine Fixes
+- **120 FPS High Refresh Rate Support**:
+  - Implemented display mode enumeration in `MainActivity` to request 120Hz/maximum refresh rate on supported devices.
+  - Re-architected `InfiniteCanvas` into a 3-layer hardware-accelerated engine (`graphicsLayer`), isolating background polka dots, committed content, and active strokes.
+  - Replaced procedural dot loop with vectorized single-call GPU rendering via `nativeCanvas.drawPoints`.
+- **Stroke Drawing Continuity**:
+  - Eliminated conflicting Compose gesture detectors that were prematurely cancelling strokes after a few milliseconds.
+  - Enabled finger drawing by default for immediate out-of-the-box drawing on phones and tablets.
+- **Two-Finger Navigation in Draw Mode**:
+  - Added multi-pointer gesture arbitration inside `StylusInputProcessor`. Two-finger pan and pinch-to-zoom now works seamlessly in both Draw and Hand modes with automatic tentative stroke cancellation.
+- **Custom Editorial Typography**:
+  - Bundled offline `Inter` variable font and `JetBrains Mono` font for clean, publication-grade monochromatic typography.
+
+---
+
 ## [1.0.0] - 2026-11-08
 
 ### Added

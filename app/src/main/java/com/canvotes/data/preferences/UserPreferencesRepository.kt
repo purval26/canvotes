@@ -18,7 +18,7 @@ data class UserPreferences(
     val defaultTool: CanvasToolMode = CanvasToolMode.PEN,
     val defaultPenWidth: Float = 3.0f,
     val palmRejectionEnabled: Boolean = true,
-    val fingerDrawingEnabled: Boolean = false,
+    val fingerDrawingEnabled: Boolean = true,
     val lastOpenedNotebookId: String? = null,
     val lastOpenedPageId: String? = null
 )
@@ -51,7 +51,7 @@ class UserPreferencesRepository(private val context: Context) {
                 defaultTool = runCatching { CanvasToolMode.valueOf(toolStr) }.getOrDefault(CanvasToolMode.PEN),
                 defaultPenWidth = preferences[PreferencesKeys.DEFAULT_PEN_WIDTH] ?: 3.0f,
                 palmRejectionEnabled = preferences[PreferencesKeys.PALM_REJECTION] ?: true,
-                fingerDrawingEnabled = preferences[PreferencesKeys.FINGER_DRAWING] ?: false,
+                fingerDrawingEnabled = preferences[PreferencesKeys.FINGER_DRAWING] ?: true,
                 lastOpenedNotebookId = preferences[PreferencesKeys.LAST_NOTEBOOK_ID],
                 lastOpenedPageId = preferences[PreferencesKeys.LAST_PAGE_ID]
             )

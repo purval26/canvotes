@@ -1,6 +1,8 @@
 package com.canvotes
 
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +19,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        enableHighRefreshRate()
 
         val app = application as CanvotesApplication
 
@@ -30,6 +33,33 @@ class MainActivity : ComponentActivity() {
                     CanvotesNavHost(app = app)
                 }
             }
+        }
+    }
+
+    private fun enableHighRefreshRate() {
+        try {
+            val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                display
+            } else {
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && display != null) {
+                val modes = display.supportedModes
+                val highestMode = modes.maxByOrNull { it.refreshRate }
+                if (highestMode != null && highestMode.refreshRate >= 90f) {
+                    val params = window.attributes
+                    params.preferredDisplayModeId = highestMode.modeId
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        params.preferredMinDisplayRefreshRate = highestMode.refreshRate
+                        params.preferredMaxDisplayRefreshRate = highestMode.refreshRate
+                    }
+                    window.attributes = params
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
