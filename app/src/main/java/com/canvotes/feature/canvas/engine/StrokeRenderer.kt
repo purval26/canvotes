@@ -172,7 +172,13 @@ object StrokeRenderer {
             } else if (hex.equals("#FFFFFF", ignoreCase = true) || hex.equals("#FFF", ignoreCase = true)) {
                 if (isDarkTheme) Color.Black else Color.White
             } else {
-                Color(android.graphics.Color.parseColor(hex))
+                val cleanHex = hex.removePrefix("#")
+                val colorLong = when (cleanHex.length) {
+                    6 -> 0xFF000000L or cleanHex.toLong(16)
+                    8 -> cleanHex.toLong(16)
+                    else -> if (isDarkTheme) 0xFFFFFFFFL else 0xFF000000L
+                }
+                Color(colorLong)
             }
         } catch (e: Exception) {
             if (isDarkTheme) Color.White else Color.Black
