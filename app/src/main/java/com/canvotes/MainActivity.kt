@@ -36,6 +36,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        com.canvotes.core.util.FrameMetricsMonitor.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        com.canvotes.core.util.FrameMetricsMonitor.stop()
+    }
+
     private fun enableHighRefreshRate() {
         try {
             val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

@@ -28,6 +28,7 @@ fun CanvasScreen(
     val selectedObjectId by viewModel.selectedObjectId.collectAsState()
     val canUndo by viewModel.canUndo.collectAsState()
     val canRedo by viewModel.canRedo.collectAsState()
+    val fingerDrawingEnabled by viewModel.fingerDrawingEnabled.collectAsState()
     val saveStatus by viewModel.saveStatus.collectAsState()
     val pages by viewModel.pages.collectAsState()
     val currentPageId by viewModel.currentPageId.collectAsState()
@@ -91,6 +92,8 @@ fun CanvasScreen(
                 onNavigateBack = onNavigateBack,
                 onAddImage = { imagePicker.launch("image/*") },
                 onImportPdf = { pdfPicker.launch("application/pdf") },
+                isFingerDrawingEnabled = fingerDrawingEnabled,
+                onToggleFingerDrawing = { viewModel.toggleFingerDrawing() },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()

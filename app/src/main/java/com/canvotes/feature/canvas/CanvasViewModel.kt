@@ -60,6 +60,21 @@ class CanvasViewModel(
     private val _saveStatus = MutableStateFlow("Saved")
     val saveStatus: StateFlow<String> = _saveStatus.asStateFlow()
 
+    private val _fingerDrawingEnabled = MutableStateFlow(false)
+    val fingerDrawingEnabled: StateFlow<Boolean> = _fingerDrawingEnabled.asStateFlow()
+
+    fun toggleFingerDrawing() {
+        val next = !_fingerDrawingEnabled.value
+        _fingerDrawingEnabled.value = next
+        inputProcessor.updateSettings(
+            palmRejection = true,
+            fingerDrawing = next
+        )
+        viewModelScope.launch {
+            preferencesRepository.setFingerDrawingEnabled(next)
+        }
+    }
+
     private val commandHistory = CommandHistory()
     private val _canUndo = MutableStateFlow(false)
     val canUndo: StateFlow<Boolean> = _canUndo.asStateFlow()
@@ -91,6 +106,7 @@ class CanvasViewModel(
         viewModelScope.launch {
             preferencesRepository.userPreferencesFlow.collect { prefs ->
                 _strokeWidth.value = prefs.defaultPenWidth
+                _fingerDrawingEnabled.value = prefs.fingerDrawingEnabled
                 inputProcessor.updateSettings(
                     palmRejection = prefs.palmRejectionEnabled,
                     fingerDrawing = prefs.fingerDrawingEnabled
@@ -181,6 +197,7 @@ class CanvasViewModel(
                         )
                     }
                     CanvasToolMode.ERASER -> {
+                        lastEraserPoint = null
                         eraseStrokesAt(event.point.x, event.point.y)
                     }
                     CanvasToolMode.SHAPE -> {
@@ -214,6 +231,7 @@ class CanvasViewModel(
                 }
             }
             is CanvasInputEvent.StrokeEnd -> {
+                lastEraserPoint = null
                 val stroke = _activeStroke.value
                 if (stroke != null && stroke.points.isNotEmpty()) {
                     val smoothedPoints = BezierSmoother.filterJitter(stroke.points)
@@ -229,6 +247,7 @@ class CanvasViewModel(
                 }
             }
             is CanvasInputEvent.StrokeCancel -> {
+                lastEraserPoint = null
                 _activeStroke.value = null
                 _activeShape.value = null
             }
@@ -277,12 +296,24 @@ class CanvasViewModel(
         })
     }
 
+    private var lastEraserPoint: Pair<Float, Float>? = null
+
     private fun eraseStrokesAt(worldX: Float, worldY: Float) {
         val tolerance = _strokeWidth.value * 2.5f
         val strokes = _document.value.strokes
-        val hitStrokes = strokes.filter { stroke ->
-            CoordinateTransform.isStrokeIntersectingPoint(stroke, worldX, worldY, tolerance)
+        val prev = lastEraserPoint
+
+        val hitStrokes = if (prev != null) {
+            strokes.filter { stroke ->
+                CoordinateTransform.isStrokeIntersectingSegment(stroke, prev.first, prev.second, worldX, worldY, tolerance)
+            }
+        } else {
+            strokes.filter { stroke ->
+                CoordinateTransform.isStrokeIntersectingPoint(stroke, worldX, worldY, tolerance)
+            }
         }
+        lastEraserPoint = Pair(worldX, worldY)
+
         if (hitStrokes.isNotEmpty()) {
             val remaining = strokes.filterNot { hitStrokes.contains(it) }
             executeCommand(object : CanvasCommand {

@@ -79,4 +79,35 @@ class CoordinateTransformTest {
         assertTrue(CoordinateTransform.isPointInPolygon(50f, 50f, polygon))
         assertFalse(CoordinateTransform.isPointInPolygon(150f, 50f, polygon))
     }
+
+    @Test
+    fun testStrokeIntersectingSegment() {
+        val stroke = Stroke(
+            points = listOf(
+                StrokePoint(0f, 10f),
+                StrokePoint(20f, 10f)
+            ),
+            strokeWidth = 2f
+        )
+
+        // Eraser segment crossing the stroke from (10, 0) to (10, 20)
+        assertTrue(
+            CoordinateTransform.isStrokeIntersectingSegment(
+                stroke = stroke,
+                x1 = 10f, y1 = 0f,
+                x2 = 10f, y2 = 20f,
+                tolerance = 4f
+            )
+        )
+
+        // Eraser segment completely distant from stroke
+        assertFalse(
+            CoordinateTransform.isStrokeIntersectingSegment(
+                stroke = stroke,
+                x1 = 50f, y1 = 50f,
+                x2 = 60f, y2 = 60f,
+                tolerance = 4f
+            )
+        )
+    }
 }

@@ -104,6 +104,61 @@ object CoordinateTransform {
     }
 
     /**
+     * Checks if a stroke intersects with an eraser path segment (p1 -> p2).
+     * Prevents fast eraser swipes from skipping strokes between touch sample intervals.
+     */
+    fun isStrokeIntersectingSegment(
+        stroke: Stroke,
+        x1: Float, y1: Float,
+        x2: Float, y2: Float,
+        tolerance: Float
+    ): Boolean {
+        if (x1 == x2 && y1 == y2) {
+            return isStrokeIntersectingPoint(stroke, x1, y1, tolerance)
+        }
+
+        val bounds = computeStrokeBounds(stroke) ?: return false
+        val segMinX = min(x1, x2) - tolerance
+        val segMaxX = max(x1, x2) + tolerance
+        val segMinY = min(y1, y2) - tolerance
+        val segMaxY = max(y1, y2) + tolerance
+
+        val segBounds = RectF(segMinX, segMinY, segMaxX, segMaxY)
+        if (!bounds.intersects(segBounds)) return false
+
+        // Check if endpoints hit the stroke
+        if (isStrokeIntersectingPoint(stroke, x1, y1, tolerance)) return true
+        if (isStrokeIntersectingPoint(stroke, x2, y2, tolerance)) return true
+
+        // Check midpoint
+        val midX = (x1 + x2) / 2f
+        val midY = (y1 + y2) / 2f
+        if (isStrokeIntersectingPoint(stroke, midX, midY, tolerance)) return true
+
+        // Check line-line intersection with each stroke segment
+        val points = stroke.points
+        for (i in 0 until points.size - 1) {
+            val sp1 = points[i]
+            val sp2 = points[i + 1]
+            if (doSegmentsIntersect(x1, y1, x2, y2, sp1.x, sp1.y, sp2.x, sp2.y)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun doSegmentsIntersect(
+        p1x: Float, p1y: Float, p2x: Float, p2y: Float,
+        p3x: Float, p3y: Float, p4x: Float, p4y: Float
+    ): Boolean {
+        fun ccw(ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float): Boolean {
+            return (cy - ay) * (bx - ax) > (by - ay) * (cx - ax)
+        }
+        return (ccw(p1x, p1y, p3x, p3y, p4x, p4y) != ccw(p2x, p2y, p3x, p3y, p4x, p4y)) &&
+                (ccw(p1x, p1y, p2x, p2y, p3x, p3y) != ccw(p1x, p1y, p2x, p2y, p4x, p4y))
+    }
+
+    /**
      * Ray-casting algorithm to test whether a world point is inside a closed polygon (e.g. Lasso selection).
      */
     fun isPointInPolygon(px: Float, py: Float, polygon: List<StrokePoint>): Boolean {

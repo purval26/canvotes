@@ -37,6 +37,8 @@ fun CanvasToolbar(
     onNavigateBack: () -> Unit,
     onAddImage: () -> Unit,
     onImportPdf: () -> Unit,
+    isFingerDrawingEnabled: Boolean = false,
+    onToggleFingerDrawing: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var showWidthSlider by remember { mutableStateOf(false) }
@@ -146,6 +148,26 @@ fun CanvasToolbar(
                     isSelected = false,
                     onClick = onImportPdf
                 )
+
+                VerticalDivider(modifier = Modifier.height(24.dp).padding(horizontal = 2.dp))
+
+                // Finger Mode Toggle (Pan by default vs Draw)
+                IconButton(
+                    onClick = onToggleFingerDrawing,
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isFingerDrawingEnabled) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent
+                        )
+                ) {
+                    Icon(
+                        imageVector = if (isFingerDrawingEnabled) Icons.Default.TouchApp else Icons.Default.PanToolAlt,
+                        contentDescription = if (isFingerDrawingEnabled) "Finger Drawing Active" else "Finger Pan Active",
+                        tint = if (isFingerDrawingEnabled) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
 
                 VerticalDivider(modifier = Modifier.height(24.dp).padding(horizontal = 2.dp))
 

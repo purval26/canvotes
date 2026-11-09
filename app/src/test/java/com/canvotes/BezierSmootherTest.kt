@@ -33,4 +33,19 @@ class BezierSmootherTest {
         val resultPair = BezierSmoother.filterJitter(pair)
         assertEquals(2, resultPair.size)
     }
+
+    @Test
+    fun testJitterFilterPreservesSharpCorners() {
+        // Points forming a sharp 90-degree corner at (10, 0)
+        val points = listOf(
+            StrokePoint(0f, 0f),
+            StrokePoint(10f, 0f), // Apex corner
+            StrokePoint(10f, 10f)
+        )
+        val filtered = BezierSmoother.filterJitter(points, minDistance = 20.0f)
+        // Even with minDistance = 20, the corner apex must be preserved!
+        assertEquals(3, filtered.size)
+        assertEquals(10f, filtered[1].x, 0.001f)
+        assertEquals(0f, filtered[1].y, 0.001f)
+    }
 }
